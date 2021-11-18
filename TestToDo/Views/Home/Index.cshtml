@@ -1,0 +1,27 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <div id="content">
+        <div class="add-task">
+            <input class="form-control" name="add-input" id="add-input" type="text"/>
+        </div>
+        <div class="tasks-list">
+
+        </div>
+    </div>
+</div>
+
+<script type="text/template" class="task-templete">
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" <%= completed %> name="defaultCheck1"/>
+        <label class="form-check-label" for="defaultCheck1">
+            <%= title %>
+        </label>
+        <button class="float-right btn btn-danger cancel-edit none">Cancel</button>
+        <button class="float-right btn btn-success update-task none">Update</button>
+        <button class="float-right btn btn-danger delete-task">Delete</button>
+        <button class="float-right btn btn-warning edit-task">Edit</button>
+    </div>
+</script>
