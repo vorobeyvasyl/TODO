@@ -89,3 +89,12 @@ body {
 .form-check .btn{
     width:100px;
 }
+
+.form-check.disabled > .form-check-label {
+    color: #0075ff;
+}
+
+.form-check.disabled > .edit-task {
+    opacity: .45;
+    pointer-events: none;
+}

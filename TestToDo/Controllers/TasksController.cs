@@ -62,7 +62,10 @@ namespace TestToDo.Controllers
             {
                 if (!TaskExists(id))
                 {
-                    return NotFound();
+                    _context.Task.Add(task);
+                    await _context.SaveChangesAsync();
+
+                    return CreatedAtAction("GetTask", new { id = task.Id }, task);
                 }
                 else
                 {
@@ -75,7 +78,7 @@ namespace TestToDo.Controllers
 
         // POST: api/Tasks
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
+        [HttpPut]
         public async Task<ActionResult<Models.Task>> PostTask(Models.Task task)
         {
             _context.Task.Add(task);

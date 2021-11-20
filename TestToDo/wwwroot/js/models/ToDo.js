@@ -1,30 +1,15 @@
 ﻿
-	var Task = Backbone.Model.extend({
-		
-		defaults: {
-			Id: 0,
-			Title: '',
-			Completed: ''
-		}
-
-		
-	});
+var Task = Backbone.Model.extend({		
+	defaults: {
+		id: 0,
+		title: '',
+		completed: ''
+	}
+});
 
 var Tasks = Backbone.Collection.extend({
 	url: 'https://localhost:44381/api/Tasks'
 });
-
-	var Task1 = new Task({
-		Id: 1,
-		Title: 'Task1 test',
-		Completed: 'checked'
-	});
-
-	var Task2 = new Task({
-		Id: 2,
-		Title: 'Task2 test',
-		Completed: ''
-	});
 
 var tasksCollection = new Tasks();
 
@@ -37,23 +22,36 @@ var TaskView = Backbone.View.extend({
 	events: {
 		'click .edit-task': 'edit',
 		'click .update-task': 'update',
+		'change .form-check-input':'update',
 		'click .cancel-edit': 'cancel',
 		'click .delete-task': 'delete',
+		'keyup .task-update-input':'update'
 	},
 	edit: function () {
 		this.$('.edit-task').hide();
 		this.$('.delete-task').hide();
 		this.$('.update-task').show();
 		this.$('.cancel-edit').show();
-
-		var Title = this.$('.form-check-label').html().trim();
-		this.$('.form-check-label').html('<input type="text" class="form-control task-update-input" value="'+Title+'"/>')
+		this.$('.form-check-input').addClass('none');
+		var title = this.$('.form-check-label').html().trim();
+		this.$('.form-check-label').html('<input type="text" class="form-control task-update-input" value="'+title+'"/>')
 	},
-	update: function () {
-		this.model.set('form-check-label', $('.task-update-input').val().trim());
+	update: function (event) {
+		if (event.type == 'keyup' && event.keyCode != 13) {
+			return;
+		}
+		if (this.$(".task-update-input").length>0) {
+			this.model.set('title', this.$('.task-update-input').val().trim());
+		}
+		if (this.$(".form-check-input").prop('checked')) {
+			this.model.set('completed', 'checked');
+		}
+		else {
+			this.model.set('completed', '');			
+        }
 		this.model.save(null, {
 			success: function (response) {
-				console.log('Successfully UPDATED task with _id: ' + response.toJSON().Id);
+				console.log('Successfully UPDATED task with _id: ' + response.toJSON().id);
 			},
 			error: function (err) {
 				console.log('Failed to update task!');
@@ -86,7 +84,7 @@ var TasksView = Backbone.View.extend({
 		this.model.fetch({
 			success: function (response) {
 				_.each(response.toJSON(), function (item) {
-					console.log('Get item ' + item.Id)
+					console.log('Get item ' + item.id)
 				})
 			},
 			error: function () {
@@ -115,14 +113,15 @@ $(document).ready(function () {
 		if (event.keyCode === 13) {			
 			event.preventDefault();			
 			var task = new Task({
-				Title: $("#add-input").val().trim()
+				title: $("#add-input").val().trim()
 			});
 			console.log(task.toJSON());
+			$("#add-input").val('');
 			tasksCollection.add(task);
 
 			task.save(null, {
 				success: function (response) {
-					console.log('Successfully saved task, id=' + response.toJSON().Id)
+					console.log('Successfully saved task, id=' + response.toJSON().id)
 				},
 				error: function () {
 					console.log('Failed to save Task');
